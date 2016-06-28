@@ -1,4 +1,4 @@
-# ![Users](https://raw.githubusercontent.com/sinergi/users/master/users-logo.svg "Users")
+# ![Users](https://cdn.rawgit.com/sinergi/users/master/users-logo.svg "Users")
 
 [![Build Status](https://api.travis-ci.org/sinergi/users.svg?branch=master)](https://travis-ci.org/sinergi/users)
 [![StyleCI](https://styleci.io/repos/15456713/shield)](https://styleci.io/repos/15456713)
