@@ -24,7 +24,7 @@ class UserEntity implements UserEntityInterface
     /**
      * @ORM\Column(type="string", name="status", columnDefinition="ENUM('active','deleted','banned')")
      */
-    protected $status = self::STATUS_ACTIVE;
+    protected $status;
 
     /**
      * @ORM\Column(type="boolean", name="is_admin")

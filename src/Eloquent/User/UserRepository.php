@@ -2,7 +2,9 @@
 
 namespace Sinergi\Users\Eloquent\User;
 
-class UserRepository extends UserEntity
+use Sinergi\Users\User\UserRepositoryInterface;
+
+class UserRepository extends UserEntity implements UserRepositoryInterface
 {
 
 }

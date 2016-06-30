@@ -4,6 +4,10 @@ namespace Sinergi\Users\Authentication;
 
 use Exception;
 use Interop\Container\ContainerInterface;
+use Sinergi\Users\Container;
+use Sinergi\Users\Session\SessionController;
+use Sinergi\Users\User\UserEntityInterface;
+use Sinergi\Users\User\UserRepositoryInterface;
 
 class AuthenticationController
 {
@@ -11,7 +15,7 @@ class AuthenticationController
 
     public function __construct(ContainerInterface $container)
     {
-        $this->container = $container;
+        $this->container = new Container($container);
     }
 
     /**
@@ -47,47 +51,28 @@ class AuthenticationController
 
     public function login(string $email, string $password, bool $isLongSession = false)
     {
-        
-        if ($parameters instanceof UserEntity) {
-            $user = $parameters;
-        } else {
-            $user = $this->getUserRepository()
-                ->findOneByEmail($parameters['email']);
-        }
+        /** @var UserRepositoryInterface $userRepository */
+        $userRepository = $this->container->get(UserRepositoryInterface::class);
+        $user = $userRepository->findByEmail($email);
 
-        if (!($user instanceof UserEntity)
-            || (is_array($parameters)
-                && !$user->testPassword($parameters['password']))
-        ) {
-            throw new AuthenticationException(
-                $this->getDictionary()
-                    ->get('user.authentication.error.invalid_credentials')
-            );
+        if (!($user instanceof UserEntityInterface) || !$user->testPassword($password)) {
+            throw new AuthenticationException('Invalid credentials', 1000);
         }
 
         if (!$user->isActive()) {
-            $statusLabel = (new UserController($this->getContainer()))
-                ->getUserStatusLabel($user->getStatus());
-
-            $accountDisabledError = $this->getDictionary()
-                ->get('user.authentication.error.account_disabled');
-
-            throw new AuthenticationException(
-                sprintf($accountDisabledError, $statusLabel)
-            );
+            switch ($user->getStatus()) {
+                case UserEntityInterface::STATUS_BANNED:
+                    throw new AuthenticationException('Account banned', 1001);
+                case UserEntityInterface::STATUS_DELETED:
+                    throw new AuthenticationException('Account deleted', 1002);
+                default:
+                    throw new AuthenticationException('Account invalid', 1003);
+            }
         }
 
         try {
-            $longSession = is_array($parameters) ?
-                (bool)$parameters['is_long_session'] : false;
-
-            $this->setSession(
-
-                $this->getContainer()->getSessionController()->createSession(
-                    $user,
-                    $longSession
-                )
-            );
+            $sessionController = new SessionController($this->container);
+            $sessionController->createSession($user, $isLongSession);
 
             $this->triggerEvent('user.login');
 

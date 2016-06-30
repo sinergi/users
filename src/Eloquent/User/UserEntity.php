@@ -75,12 +75,12 @@ class UserEntity extends Model implements UserEntityInterface
         $this->setStatus($status);
     }
 
-    public function getIsAdminAttribute(): boolean
+    public function getIsAdminAttribute(): bool
     {
         return $this->isAdmin();
     }
 
-    public function setIsAdminAttribute(boolean $isAdmin)
+    public function setIsAdminAttribute(bool $isAdmin)
     {
         $this->setIsAdmin($isAdmin);
     }
@@ -105,12 +105,12 @@ class UserEntity extends Model implements UserEntityInterface
         $this->setPendingEmail($pendingEmail);
     }
 
-    public function getIsEmailConfirmedAttribute(): boolean
+    public function getIsEmailConfirmedAttribute(): bool
     {
         return $this->isEmailConfirmed();
     }
 
-    public function setIsEmailConfirmedAttribute(boolean $isEmailConfirmed)
+    public function setIsEmailConfirmedAttribute(bool $isEmailConfirmed)
     {
         $this->setIsEmailConfirmed($isEmailConfirmed);
     }

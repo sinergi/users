@@ -42,7 +42,8 @@ trait UserEntityTrait
         return $this;
     }
 
-    public function getStatus(): string
+    /** @return string|null */
+    public function getStatus()
     {
         return $this->status;
     }

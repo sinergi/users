@@ -15,7 +15,8 @@ interface UserEntityInterface extends JsonSerializable
 
     public function getId(): int;
     public function setId(int $id): UserEntityInterface;
-    public function getStatus(): string;
+    /** @return string|null */
+    public function getStatus();
     public function setStatus(string $status): UserEntityInterface;
     public function isAdmin(): bool;
     public function setIsAdmin(bool $isAdmin): UserEntityInterface;
