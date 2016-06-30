@@ -21,10 +21,9 @@ class SessionEntity implements SessionEntityInterface
     protected $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Sinergi\Users\Doctrine\User\UserEntity")
-     * @ORM\JoinColumn(name="user_id", referencedColumnName="id", onDelete="CASCADE")
+     * @ORM\Column(type="integer", name="user_id")
      */
-    protected $user;
+    protected $userId;
 
     /**
      * @ORM\Column(type="boolean", name="is_long_session")

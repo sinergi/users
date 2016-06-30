@@ -5,6 +5,7 @@ namespace Sinergi\Users\Session;
 use JsonSerializable;
 use DateTime;
 use Sinergi\Users\User\UserEntityInterface;
+use Sinergi\Users\User\UserRepositoryInterface;
 
 interface SessionEntityInterface extends JsonSerializable
 {
@@ -23,6 +24,9 @@ interface SessionEntityInterface extends JsonSerializable
     public function generateId(): string;
     public function setIsLongSession(bool $isLongSession): SessionEntityInterface;
     public function isLongSession(): bool;
+    public function setUserId(int $userId): SessionEntityInterface;
+    public function getUserId(): int;
     public function setUser(UserEntityInterface $user): SessionEntityInterface;
     public function getUser(): UserEntityInterface;
+    public function setUserRepository(UserRepositoryInterface $userRepository);
 }

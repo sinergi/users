@@ -16,8 +16,8 @@ class SessionEntity extends Model implements SessionEntityInterface
 
     public $id;
     public $user_id;
-    public $isLongSession = false;
-    public $expirationDatetime;
+    public $is_long_session = false;
+    public $expiration_datetime;
 
     protected $table = 'sessions';
 

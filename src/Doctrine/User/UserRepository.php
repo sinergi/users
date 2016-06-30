@@ -16,12 +16,24 @@ use Sinergi\Users\User\UserRepositoryInterface;
  */
 class UserRepository extends EntityRepository implements UserRepositoryInterface
 {
-    /** @return UserEntity|null */
+    /** @return UserEntity */
     public function findByEmail(string $email)
     {
         $result = $this->createQueryBuilder('u')
             ->where('u.email = :email')
             ->setParameter('email', $email)
+            ->getQuery()
+            ->getResult();
+
+        return $result && $result[0] ? $result[0] : null;
+    }
+
+    /** @return UserEntity */
+    public function findById(int $id)
+    {
+        $result = $this->createQueryBuilder('u')
+            ->where('u.id = :id')
+            ->setParameter('id', $id)
             ->getQuery()
             ->getResult();
 

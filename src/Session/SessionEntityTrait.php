@@ -5,12 +5,16 @@ namespace Sinergi\Users\Session;
 use DateTime;
 use DateInterval;
 use Sinergi\Users\User\UserEntityInterface;
+use Sinergi\Users\User\UserRepositoryInterface;
 use Sinergi\Users\Utils\Token;
 
 trait SessionEntityTrait
 {
     protected $id;
+    protected $userId;
     protected $user;
+    /** @var  UserRepositoryInterface */
+    protected $userRepository;
     protected $isLongSession = false;
     protected $expirationDatetime;
 
@@ -81,22 +85,44 @@ trait SessionEntityTrait
         return $this->isLongSession;
     }
 
-    public function setUser(UserEntityInterface $user): SessionEntityInterface
+    public function setUserId(int $userId): SessionEntityInterface
     {
-        $this->user = $user;
+        $this->userId = $userId;
         return $this;
+    }
+
+    public function getUserId(): int
+    {
+        return $this->userId;
     }
 
     public function getUser(): UserEntityInterface
     {
-        return $this->user;
+        if ($this->user) {
+            return $this->user;
+        } elseif (!$this->userRepository) {
+            throw new \Exception('Cannot fetch user without user repository');
+        }
+        return $this->user = $this->userRepository->findById($this->getUserId());
+    }
+
+    public function setUser(UserEntityInterface $user): SessionEntityInterface
+    {
+        $this->setUserId($user->getId());
+        $this->user = $user;
+    }
+
+    public function setUserRepository(UserRepositoryInterface $userRepository): SessionEntityInterface
+    {
+        $this->userRepository = $userRepository;
+        return $this;
     }
 
     public function toArray(): array
     {
         return [
             'id' => $this->getId(),
-            'user' => $this->getUser()->toArray(),
+            'userId' => $this->getUserId(),
             'isLongSession' => $this->isLongSession(),
             'expirationDatetime' => $this->getExpirationDatetime()->format('Y-m-d H:i:s'),
         ];
