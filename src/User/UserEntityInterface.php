@@ -17,15 +17,15 @@ interface UserEntityInterface extends JsonSerializable
     public function setId(int $id): UserEntityInterface;
     public function getStatus(): string;
     public function setStatus(string $status): UserEntityInterface;
-    public function isAdmin(): boolean;
-    public function setIsAdmin(boolean $isAdmin): UserEntityInterface;
-    public function isActive(): boolean;
+    public function isAdmin(): bool;
+    public function setIsAdmin(bool $isAdmin): UserEntityInterface;
+    public function isActive(): bool;
     public function getEmail(): string;
     public function setEmail(string $email): UserEntityInterface;
     public function getPendingEmail(): string;
     public function setPendingEmail(string $pendingEmail): UserEntityInterface;
-    public function isEmailConfirmed(): boolean;
-    public function setIsEmailConfirmed(boolean $isEmailConfirmed): UserEntityInterface;
+    public function isEmailConfirmed(): bool;
+    public function setIsEmailConfirmed(bool $isEmailConfirmed): UserEntityInterface;
     public function getEmailConfirmationToken(): string;
     public function setEmailConfirmationToken(string $emailConfirmationToken): UserEntityInterface;
     public function getEmailConfirmationTokenExpirationDatetime(): DateTime;
@@ -36,7 +36,7 @@ interface UserEntityInterface extends JsonSerializable
     public function setLastEmailTokenGeneratedDatetime(
         DateTime $lastEmailTokenGeneratedDatetime
     ): UserEntityInterface;
-    public function canGenerateNewEmailConfirmationToken(): boolean;
+    public function canGenerateNewEmailConfirmationToken(): bool;
     public function generateEmailConfirmationToken(): UserEntityInterface;
     public function getDeletedEmail(): string;
     public function setDeletedEmail(string $deletedEmail): UserEntityInterface;
@@ -52,9 +52,9 @@ interface UserEntityInterface extends JsonSerializable
     public function setLastPasswordResetTokenGeneratedDatetime(
         DateTime $lastPasswordResetTokenGeneratedDatetime
     ): UserEntityInterface;
-    public function canGenerateNewResetPasswordToken(): boolean;
+    public function canGenerateNewResetPasswordToken(): bool;
     public function generatePasswordResetToken(): UserEntityInterface;
-    public function testPassword(string $password): boolean;
+    public function testPassword(string $password): bool;
     public function getCreationDatetime(): DateTime;
     public function setCreationDatetime(DateTime $creationDatetime): UserEntityInterface;
     public function getModificationDatetime(): DateTime;

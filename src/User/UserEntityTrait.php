@@ -8,7 +8,7 @@ use Sinergi\Users\Utils\Token;
 trait UserEntityTrait
 {
     protected $id;
-    protected $status = UserEntityInterface::STATUS_ACTIVE;
+    protected $status;
     protected $isAdmin;
     protected $email = null;
     protected $pendingEmail = null;
@@ -26,6 +26,7 @@ trait UserEntityTrait
 
     public function __construct()
     {
+        $this->setStatus(UserEntityInterface::STATUS_ACTIVE);
         $this->setCreationDatetime(new DateTime());
         $this->setModificationDatetime(new DateTime());
     }
@@ -52,25 +53,25 @@ trait UserEntityTrait
         return $this;
     }
 
-    public function isAdmin(): boolean
+    public function isAdmin(): bool
     {
         return $this->isAdmin;
     }
 
-    public function setIsAdmin(boolean $isAdmin): UserEntityInterface
+    public function setIsAdmin(bool $isAdmin): UserEntityInterface
     {
         $this->isAdmin = $isAdmin;
         return $this;
     }
 
-    public function isActive(): boolean
+    public function isActive(): bool
     {
         return $this->getStatus() === UserEntityInterface::STATUS_ACTIVE;
     }
 
     public function getEmail(): string
     {
-        return $this->email;
+        return $this->email ?: '';
     }
 
     public function setEmail(string $email): UserEntityInterface
@@ -90,12 +91,12 @@ trait UserEntityTrait
         return $this;
     }
 
-    public function isEmailConfirmed(): boolean
+    public function isEmailConfirmed(): bool
     {
         return $this->isEmailConfirmed;
     }
 
-    public function setIsEmailConfirmed(boolean $isEmailConfirmed): UserEntityInterface
+    public function setIsEmailConfirmed(bool $isEmailConfirmed): UserEntityInterface
     {
         $this->isEmailConfirmed = $isEmailConfirmed;
         return $this;
@@ -136,7 +137,7 @@ trait UserEntityTrait
         return $this;
     }
 
-    public function canGenerateNewEmailConfirmationToken(): boolean
+    public function canGenerateNewEmailConfirmationToken(): bool
     {
         $lastGenerated = $this->getLastEmailTokenGeneratedDatetime();
         return (
@@ -212,7 +213,7 @@ trait UserEntityTrait
         return $this;
     }
 
-    public function canGenerateNewResetPasswordToken(): boolean
+    public function canGenerateNewResetPasswordToken(): bool
     {
         $lastGenerated = $this->getLastPasswordResetTokenGeneratedDatetime();
         return (
@@ -239,7 +240,7 @@ trait UserEntityTrait
         return $this;
     }
 
-    public function testPassword(string $password): boolean
+    public function testPassword(string $password): bool
     {
         return password_verify($password, $this->password);
     }
