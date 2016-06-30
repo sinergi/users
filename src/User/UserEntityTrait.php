@@ -81,7 +81,8 @@ trait UserEntityTrait
         return $this;
     }
 
-    public function getPendingEmail(): string
+    /** @return string */
+    public function getPendingEmail()
     {
         return $this->pendingEmail;
     }
@@ -103,7 +104,8 @@ trait UserEntityTrait
         return $this;
     }
 
-    public function getEmailConfirmationToken(): string
+    /** @return string */
+    public function getEmailConfirmationToken()
     {
         return $this->emailConfirmationToken;
     }
@@ -114,7 +116,8 @@ trait UserEntityTrait
         return $this;
     }
 
-    public function getEmailConfirmationTokenExpirationDatetime(): DateTime
+    /** @return DateTime */
+    public function getEmailConfirmationTokenExpirationDatetime()
     {
         return $this->emailConfirmationTokenExpirationDatetime;
     }
@@ -126,7 +129,8 @@ trait UserEntityTrait
         return $this;
     }
 
-    public function getLastEmailTokenGeneratedDatetime(): DateTime
+    /** @return DateTime */
+    public function getLastEmailTokenGeneratedDatetime()
     {
         return $this->lastEmailTokenGeneratedDatetime;
     }
@@ -156,7 +160,8 @@ trait UserEntityTrait
         return $this;
     }
 
-    public function getDeletedEmail(): string
+    /** @return string */
+    public function getDeletedEmail()
     {
         return $this->deletedEmail;
     }
@@ -179,7 +184,8 @@ trait UserEntityTrait
         return $this;
     }
 
-    public function getPasswordResetToken(): string
+    /** @return string */
+    public function getPasswordResetToken()
     {
         return $this->passwordResetToken;
     }
@@ -190,7 +196,8 @@ trait UserEntityTrait
         return $this;
     }
 
-    public function getPasswordResetTokenExpirationDatetime(): DateTime
+    /** @return DateTime */
+    public function getPasswordResetTokenExpirationDatetime()
     {
         return $this->passwordResetTokenExpirationDatetime;
     }
@@ -202,7 +209,8 @@ trait UserEntityTrait
         return $this;
     }
 
-    public function getLastPasswordResetTokenGeneratedDatetime(): DateTime
+    /** @return DateTime */
+    public function getLastPasswordResetTokenGeneratedDatetime()
     {
         return $this->lastPasswordResetTokenGeneratedDatetime;
     }
@@ -274,27 +282,13 @@ trait UserEntityTrait
             'id' => $this->getId(),
             'status' => $this->getStatus(),
             'email' => $this->getEmail(),
-            'pendingEmail' => $this->getPendingEmail(),
-            'deletedEmail' => $this->getDeletedEmail(),
-            'isEmailConfirmed' => $this->isEmailConfirmed(),
-            'emailConfirmationToken' => $this->getEmailConfirmationToken(),
-            'emailConfirmationTokenExpirationDatetime' => $this->getEmailConfirmationTokenExpirationDatetime()
-                ->format('Y-m-d H:i:s'),
-            'lastEmailTokenGeneratedDatetime' => $this->getEmailConfirmationTokenExpirationDatetime()
-                ->format('Y-m-d H:i:s'),
-            'password' => $this->getPassword(),
-            'passwordResetToken' => $this->getPasswordResetToken(),
-            'passwordResetTokenExpirationDatetime' => $this->getPasswordResetTokenExpirationDatetime()
-                ->format('Y-m-d H:i:s'),
-            'lastPasswordResetTokenGeneratedDatetime' => $this->getLastPasswordResetTokenGeneratedDatetime()
-                ->format('Y-m-d H:i:s'),
             'isAdmin' => $this->isAdmin(),
             'creationDatetime' => $this->getCreationDatetime()->format('Y-m-d H:i:s'),
             'modificationDatetime' => $this->getModificationDatetime()->format('Y-m-d H:i:s'),
         ];
     }
 
-    public function jsonSerialize(): array
+    public function jsonSerialize()
     {
         return $this->toArray();
     }

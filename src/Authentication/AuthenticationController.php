@@ -4,6 +4,7 @@ namespace Sinergi\Users\Authentication;
 
 use Exception;
 use Interop\Container\ContainerInterface;
+use Psr\Http\Message\ResponseInterface;
 use Sinergi\Users\Container;
 use Sinergi\Users\Session\SessionController;
 use Sinergi\Users\User\UserEntityInterface;
@@ -15,7 +16,11 @@ class AuthenticationController
 
     public function __construct(ContainerInterface $container)
     {
-        $this->container = new Container($container);
+        if ($container instanceof Container) {
+            $this->container = $container;
+        } else {
+            $this->container = new Container($container);
+        }
     }
 
     /**
@@ -70,30 +75,8 @@ class AuthenticationController
             }
         }
 
-        try {
-            $sessionController = new SessionController($this->container);
-            $sessionController->createSession($user, $isLongSession);
-
-            $this->triggerEvent('user.login');
-
-            if (!$user->isEmailConfirmed()) {
-                throw new AuthenticationException(
-                    $this->getDictionary()
-                        ->get('user.authentication.error.email_not_confirmed')
-                    . '<br><a href="#" data-action="resend-confirmation-email">' . $this->getDictionary()
-                        ->get('user.authentication.error.resend_confirmation_email')
-                    . '</a>'
-                );
-            }
-            return $user;
-        } catch (AuthenticationException $e) {
-            throw $e;
-        } catch (SessionCreationException $e) {
-            throw new AuthenticationException(
-                $this->getDictionary()
-                    ->get('user.authentication.error.internal_error')
-            );
-        }
+        $sessionController = new SessionController($this->container);
+        return $sessionController->createSession($user, $isLongSession);
     }
 
     public function disconnectUser()

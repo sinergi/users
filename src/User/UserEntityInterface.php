@@ -23,33 +23,41 @@ interface UserEntityInterface extends JsonSerializable
     public function isActive(): bool;
     public function getEmail(): string;
     public function setEmail(string $email): UserEntityInterface;
-    public function getPendingEmail(): string;
+    /** @return string */
+    public function getPendingEmail();
     public function setPendingEmail(string $pendingEmail): UserEntityInterface;
     public function isEmailConfirmed(): bool;
     public function setIsEmailConfirmed(bool $isEmailConfirmed): UserEntityInterface;
-    public function getEmailConfirmationToken(): string;
+    /** @return string */
+    public function getEmailConfirmationToken();
     public function setEmailConfirmationToken(string $emailConfirmationToken): UserEntityInterface;
-    public function getEmailConfirmationTokenExpirationDatetime(): DateTime;
+    /** @return DateTime */
+    public function getEmailConfirmationTokenExpirationDatetime();
     public function setEmailConfirmationTokenExpirationDatetime(
         DateTime $emailConfirmationTokenExpirationDatetime
     ): UserEntityInterface;
-    public function getLastEmailTokenGeneratedDatetime(): DateTime;
+    /** @return DateTime */
+    public function getLastEmailTokenGeneratedDatetime();
     public function setLastEmailTokenGeneratedDatetime(
         DateTime $lastEmailTokenGeneratedDatetime
     ): UserEntityInterface;
     public function canGenerateNewEmailConfirmationToken(): bool;
     public function generateEmailConfirmationToken(): UserEntityInterface;
-    public function getDeletedEmail(): string;
+    /** @return string */
+    public function getDeletedEmail();
     public function setDeletedEmail(string $deletedEmail): UserEntityInterface;
     public function getPassword(): string;
     public function setPassword(string $password): UserEntityInterface;
-    public function getPasswordResetToken(): string;
+    /** @return string */
+    public function getPasswordResetToken();
     public function setPasswordResetToken(string $passwordResetToken): UserEntityInterface;
-    public function getPasswordResetTokenExpirationDatetime(): DateTime;
+    /** @return DateTime */
+    public function getPasswordResetTokenExpirationDatetime();
     public function setPasswordResetTokenExpirationDatetime(
         DateTime $passwordResetTokenExpirationDatetime
     ): UserEntityInterface;
-    public function getLastPasswordResetTokenGeneratedDatetime(): DateTime;
+    /** @return DateTime */
+    public function getLastPasswordResetTokenGeneratedDatetime();
     public function setLastPasswordResetTokenGeneratedDatetime(
         DateTime $lastPasswordResetTokenGeneratedDatetime
     ): UserEntityInterface;
@@ -61,5 +69,5 @@ interface UserEntityInterface extends JsonSerializable
     public function getModificationDatetime(): DateTime;
     public function setModificationDatetime(DateTime $modificationDatetime): UserEntityInterface;
     public function toArray(): array;
-    public function jsonSerialize(): array;
+    public function jsonSerialize();
 }
