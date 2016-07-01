@@ -16,6 +16,8 @@ use Sinergi\Users\Session\SessionEntityInterface;
 use Sinergi\Users\Session\SessionRepositoryInterface;
 use Sinergi\Users\User\UserEntityInterface;
 use Sinergi\Users\User\UserRepositoryInterface;
+use Sinergi\Users\User\UserValidator;
+use Sinergi\Users\User\UserValidatorInterface;
 
 class Container implements ContainerInterface
 {
@@ -34,6 +36,7 @@ class Container implements ContainerInterface
         $hasUserRepository = $this->container->has(UserRepositoryInterface::class);
         $hasSessionEntity = $this->container->has(SessionEntityInterface::class);
         $hasSessionRepository = $this->container->has(SessionRepositoryInterface::class);
+        $hasUserValidator = $this->container->has(UserValidatorInterface::class);
 
         if ($hasUserEntity && !$hasUserRepository) {
             $userEntity = $this->container->get(UserEntityInterface::class);
@@ -61,6 +64,13 @@ class Container implements ContainerInterface
                     return new EloquentSessionRepository();
                 };
             }
+        }
+
+        if (!$hasUserValidator) {
+            $self = $this;
+            $this->items[UserValidatorInterface::class] = function () use ($self) {
+                return new UserValidator($self);
+            };
         }
     }
 

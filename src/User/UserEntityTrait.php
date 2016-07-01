@@ -23,7 +23,7 @@ trait UserEntityTrait
     protected $lastPasswordResetTokenGeneratedDatetime;
     protected $creationDatetime;
     protected $modificationDatetime;
-
+    
     public function __construct()
     {
         $this->setStatus(UserEntityInterface::STATUS_ACTIVE);

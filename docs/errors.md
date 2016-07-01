@@ -13,5 +13,9 @@
 
 ### User
 
+1200 => User invalid
+
+#### User invalid errors
+
 1300 => Email already exists
 1301 => Password is empty
