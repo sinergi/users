@@ -26,7 +26,7 @@ trait SessionEntityTrait
 
     public function isValid(): bool
     {
-        return !$this->isExpired() && $this->getUser() instanceof UserEntityInterface;
+        return !$this->isExpired() && $this->getUser() instanceof UserEntityInterface && $this->getUser()->isActive();
     }
 
     public function setExpirationDatetime(DateTime $expirationDatetime): SessionEntityInterface
