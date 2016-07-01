@@ -10,3 +10,8 @@
 1100 => Invalid session
 1101 => Session expired
 1102 => Session not found
+
+### User
+
+1300 => Email already exists
+1301 => Password is empty
