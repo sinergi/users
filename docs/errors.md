@@ -13,9 +13,15 @@
 
 ### User
 
-1200 => User invalid
+1200 => Invalid user
 
 #### User invalid errors
 
 1300 => Email already exists
 1301 => Password is empty
+1302 => Email is empty
+1303 => Email is too long
+
+### Group
+
+1400 => Invalid group

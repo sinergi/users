@@ -98,7 +98,8 @@ trait SessionEntityTrait
         return $this->userId;
     }
 
-    public function getUser(): UserEntityInterface
+    /** @return UserEntityInterface */
+    public function getUser()
     {
         if ($this->user && $this->user->getId() === $this->getUserId()) {
             return $this->user;

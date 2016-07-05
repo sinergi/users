@@ -22,7 +22,8 @@ trait GroupEntityTrait
         $this->setModificationDatetime(new DateTime());
     }
 
-    public function getId(): int
+    /** @return int */
+    public function getId()
     {
         return $this->id;
     }

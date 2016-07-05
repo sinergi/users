@@ -27,7 +27,8 @@ interface SessionEntityInterface extends JsonSerializable
     public function setUserId(int $userId): SessionEntityInterface;
     public function getUserId(): int;
     public function setUser(UserEntityInterface $user): SessionEntityInterface;
-    public function getUser(): UserEntityInterface;
+    /** @return UserEntityInterface */
+    public function getUser();
     public function setUserRepository(UserRepositoryInterface $userRepository);
     public function toArray(): array;
     public function jsonSerialize();

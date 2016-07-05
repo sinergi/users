@@ -48,7 +48,8 @@ trait UserEntityTrait
         $this->setModificationDatetime(new DateTime());
     }
 
-    public function getId(): int
+    /** @return int */
+    public function getId()
     {
         return $this->id;
     }
@@ -230,7 +231,8 @@ trait UserEntityTrait
         return $this;
     }
 
-    public function getPassword(): string
+    /** @return string */
+    public function getPassword()
     {
         return $this->password;
     }
@@ -350,9 +352,24 @@ trait UserEntityTrait
     {
         return [
             'id' => $this->getId(),
+            'groupId' => $this->getGroupId(),
             'status' => $this->getStatus(),
-            'email' => $this->getEmail(),
             'isAdmin' => $this->isAdmin(),
+            'email' => $this->getEmail(),
+            'pendingEmail' => $this->getPendingEmail(),
+            'deletedEmail' => $this->getDeletedEmail(),
+            'isEmailConfirmed' => $this->isEmailConfirmed(),
+            'emailConfirmationToken' => $this->getEmailConfirmationToken(),
+            'emailConfirmationTokenExpirationDatetime' => $this->getEmailConfirmationTokenExpirationDatetime() ?
+                $this->getEmailConfirmationTokenExpirationDatetime()->format('Y-m-d H:i:s') : null,
+            'lastEmailTokenGeneratedDatetime' => $this->getLastEmailTokenGeneratedDatetime() ?
+                $this->getLastEmailTokenGeneratedDatetime()->format('Y-m-d H:i:s') : null,
+            'password' => $this->getPassword(),
+            'passwordResetToken' => $this->getPasswordResetToken(),
+            'passwordResetTokenExpirationDatetime' => $this->getPasswordResetTokenExpirationDatetime() ?
+                $this->getPasswordResetTokenExpirationDatetime()->format('Y-m-d H:i:s') : null,
+            'lastPasswordResetTokenGeneratedDatetime' => $this->getLastPasswordResetTokenGeneratedDatetime() ?
+                $this->getLastPasswordResetTokenGeneratedDatetime()->format('Y-m-d H:i:s') : null,
             'creationDatetime' => $this->getCreationDatetime()->format('Y-m-d H:i:s'),
             'modificationDatetime' => $this->getModificationDatetime()->format('Y-m-d H:i:s'),
         ];
@@ -360,6 +377,18 @@ trait UserEntityTrait
 
     public function jsonSerialize()
     {
-        return $this->toArray();
+        return array_intersect_key(
+            $this->toArray(),
+            [
+                'id' => null,
+                'groupId' => null,
+                'status' => null,
+                'isAdmin' => null,
+                'email' => null,
+                'isEmailConfirmed' => null,
+                'creationDatetime' => null,
+                'modificationDatetime' => null,
+            ]
+        );
     }
 }

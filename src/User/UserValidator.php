@@ -18,15 +18,25 @@ class UserValidator implements UserValidatorInterface
         }
     }
 
+    /**
+     * @param UserEntityInterface $user
+     * @return array
+     */
     public function __invoke(UserEntityInterface $user): array
     {
         $errors = [];
 
-        /** @var UserRepositoryInterface $userRepository */
-        $userRepository = $this->container->get(UserRepositoryInterface::class);
-        $userExists = $userRepository->findByEmail($user->getEmail());
-        if ($userExists && (!$user->getId() || ($user->getId() !== $userExists->getId()))) {
-            $errors[1300] = 'Email is already in user';
+        if (empty($user->getEmail())) {
+            $errors[1302] = 'Email is empty';
+        } elseif (strlen($user->getEmail()) > 255) {
+            $errors[1303] = 'Email is too long';
+        } else {
+            /** @var UserRepositoryInterface $userRepository */
+            $userRepository = $this->container->get(UserRepositoryInterface::class);
+            $userExists = $userRepository->findByEmail($user->getEmail());
+            if ($userExists && (!$user->getId() || ($user->getId() !== $userExists->getId()))) {
+                $errors[1300] = 'Email is already in use';
+            }
         }
 
         if (empty($user->getPassword())) {

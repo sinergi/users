@@ -50,6 +50,10 @@ class Container implements ContainerInterface
         $hasUserValidator = $this->container->has(UserValidatorInterface::class);
         $hasGroupValidator = $this->container->has(GroupValidatorInterface::class);
 
+        if (!$hasUserEntity || !$hasSessionEntity || !$hasGroupEntity) {
+            throw new \Exception('Container passed to Sinergi\\Users must contain user, group and session\'s entities');
+        }
+
         if ($hasUserEntity && !$hasUserRepository) {
             $userEntity = $this->container->get(UserEntityInterface::class);
             if ($userEntity instanceof DoctrineUserEntity) {

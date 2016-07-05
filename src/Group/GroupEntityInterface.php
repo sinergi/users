@@ -9,7 +9,8 @@ use Sinergi\Users\User\UserRepositoryInterface;
 
 interface GroupEntityInterface extends JsonSerializable
 {
-    public function getId(): int;
+    /** @return int */
+    public function getId();
     public function setId(int $id): GroupEntityInterface;
     /** @return UserEntityInterface[] */
     public function getUsers();

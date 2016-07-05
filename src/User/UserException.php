@@ -2,6 +2,8 @@
 
 namespace Sinergi\Users\User;
 
-class UserException extends \Exception
+use Sinergi\Users\Exception;
+
+class UserException extends Exception
 {
 }

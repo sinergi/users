@@ -4,7 +4,7 @@ namespace Sinergi\Users\User;
 
 use Interop\Container\ContainerInterface;
 use Sinergi\Users\Container;
-use Sinergi\Users\Session\Exception\InvalidUserException;
+use Sinergi\Users\User\Exception\InvalidUserException;
 
 class UserController
 {

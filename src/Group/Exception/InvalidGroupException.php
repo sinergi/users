@@ -1,16 +1,16 @@
 <?php
 
-namespace Sinergi\Users\User\Exception;
+namespace Sinergi\Users\Group\Exception;
 
-use Sinergi\Users\User\UserException;
+use Sinergi\Users\Group\GroupException;
 
-class InvalidUserException extends UserException
+class InvalidGroupException extends GroupException
 {
     private $errors;
 
     public function __construct(array $errors)
     {
-        parent::__construct('Invalid user', 1200);
+        parent::__construct('Invalid group', 1400);
         $this->errors = $errors;
     }
 

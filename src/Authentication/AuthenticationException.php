@@ -2,6 +2,8 @@
 
 namespace Sinergi\Users\Authentication;
 
-class AuthenticationException extends \Exception
+use Sinergi\Users\Exception;
+
+class AuthenticationException extends Exception
 {
 }

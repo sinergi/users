@@ -2,6 +2,8 @@
 
 namespace Sinergi\Users\Session;
 
-class SessionException extends \Exception
+use Sinergi\Users\Exception;
+
+class SessionException extends Exception
 {
 }

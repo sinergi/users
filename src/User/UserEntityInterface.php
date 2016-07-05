@@ -17,7 +17,8 @@ interface UserEntityInterface extends JsonSerializable
 
     const EMAIL_COOLDOWN = 300;
 
-    public function getId(): int;
+    /** @return int */
+    public function getId();
     public function setId(int $id): UserEntityInterface;
     /** @return int|null */
     public function getGroupId();
@@ -58,7 +59,8 @@ interface UserEntityInterface extends JsonSerializable
     /** @return string */
     public function getDeletedEmail();
     public function setDeletedEmail(string $deletedEmail): UserEntityInterface;
-    public function getPassword(): string;
+    /** @return string */
+    public function getPassword();
     public function setPassword(string $password): UserEntityInterface;
     /** @return string */
     public function getPasswordResetToken();
