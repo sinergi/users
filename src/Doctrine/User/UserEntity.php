@@ -22,6 +22,11 @@ class UserEntity implements UserEntityInterface
     protected $id;
 
     /**
+     * @ORM\Column(type="integer", name="group_id")
+     */
+    protected $groupId;
+
+    /**
      * @ORM\Column(type="string", name="status", columnDefinition="ENUM('active','deleted','banned')")
      */
     protected $status;

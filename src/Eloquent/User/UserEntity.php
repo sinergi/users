@@ -3,6 +3,7 @@
 namespace Sinergi\Users\Eloquent\User;
 
 use Illuminate\Database\Eloquent\Model;
+use Sinergi\Users\Eloquent\Group\GroupEntity;
 use Sinergi\Users\User\UserEntityInterface;
 use Sinergi\Users\User\UserEntityTrait;
 use DateTime;
@@ -15,6 +16,7 @@ class UserEntity extends Model implements UserEntityInterface
     use UserEntityTrait;
 
     public $id;
+    public $groupId;
     public $status = UserEntityInterface::STATUS_ACTIVE;
     public $isAdmin;
     public $email = null;
@@ -44,6 +46,7 @@ class UserEntity extends Model implements UserEntityInterface
 
     protected $casts = [
         'id' => 'int',
+        'group_id' => 'int',
         'status' => 'string',
         'is_admin' => 'boolean',
         'email' => 'string',
@@ -55,6 +58,11 @@ class UserEntity extends Model implements UserEntityInterface
         'password_reset_token' => 'string',
     ];
 
+    public function group()
+    {
+        return $this->hasOne(GroupEntity::class);
+    }
+
     public function getIdAttribute(): int
     {
         return $this->getId();
@@ -63,6 +71,11 @@ class UserEntity extends Model implements UserEntityInterface
     public function setIdAttribute(int $id)
     {
         $this->setId($id);
+    }
+
+    public function getGroup(): GroupEntity
+    {
+        return $this->group();
     }
 
     public function getStatusAttribute(): string

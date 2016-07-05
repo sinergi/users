@@ -3,11 +3,20 @@
 namespace Sinergi\Users\User;
 
 use DateTime;
+use Sinergi\Users\Group\GroupEntityInterface;
+use Sinergi\Users\Group\GroupRepositoryInterface;
+use Sinergi\Users\Session\SessionEntityInterface;
+use Sinergi\Users\Session\SessionRepositoryInterface;
 use Sinergi\Users\Utils\Token;
 
 trait UserEntityTrait
 {
     protected $id;
+    protected $groupId;
+    /** @var GroupEntityInterface */
+    protected $group;
+    /** @var SessionEntityInterface[] */
+    protected $sessions;
     protected $status;
     protected $isAdmin;
     protected $email = null;
@@ -23,9 +32,17 @@ trait UserEntityTrait
     protected $lastPasswordResetTokenGeneratedDatetime;
     protected $creationDatetime;
     protected $modificationDatetime;
-    
-    public function __construct()
-    {
+    /** @var GroupRepositoryInterface */
+    protected $groupRepository;
+    /** @var SessionRepositoryInterface */
+    protected $sessionRepository;
+
+    public function __construct(
+        GroupRepositoryInterface $groupRepository = null,
+        SessionRepositoryInterface $sessionRepository = null
+    ) {
+        $this->groupRepository = $groupRepository;
+        $this->sessionRepository = $sessionRepository;
         $this->setStatus(UserEntityInterface::STATUS_ACTIVE);
         $this->setCreationDatetime(new DateTime());
         $this->setModificationDatetime(new DateTime());
@@ -40,6 +57,47 @@ trait UserEntityTrait
     {
         $this->id = $id;
         return $this;
+    }
+
+    /** @return int|null */
+    public function getGroupId()
+    {
+        return $this->groupId;
+    }
+
+    public function setGroupId(int $groupId = null): UserEntityInterface
+    {
+        $this->groupId = $groupId;
+        return $this;
+    }
+
+    /** @return GroupEntityInterface|null */
+    public function getGroup()
+    {
+        if ($this->group && $this->group->getId() === $this->groupId) {
+            return $this->group;
+        } elseif (!$this->groupRepository) {
+            throw new \Exception('Cannot fetch group without group repository');
+        }
+        return $this->group = $this->groupRepository->findById($this->getGroupId());
+    }
+
+    public function setGroup(GroupEntityInterface $group = null): UserEntityInterface
+    {
+        $this->setGroupId($group->getId());
+        $this->group = $group;
+        return $this;
+    }
+
+    /** @return SessionEntityInterface[] */
+    public function getSessions()
+    {
+        if (is_array($this->sessions)) {
+            return $this->sessions;
+        } elseif (!$this->sessionRepository) {
+            throw new \Exception('Cannot fetch sessions without session repository');
+        }
+        return $this->sessions = $this->sessionRepository->findByUserId($this->getId());
     }
 
     /** @return string|null */
@@ -273,6 +331,18 @@ trait UserEntityTrait
     public function setModificationDatetime(DateTime $modificationDatetime): UserEntityInterface
     {
         $this->modificationDatetime = $modificationDatetime;
+        return $this;
+    }
+
+    public function setGroupRepository(GroupRepositoryInterface $groupRepository): UserEntityInterface
+    {
+        $this->groupRepository = $groupRepository;
+        return $this;
+    }
+
+    public function setSessionRepository(SessionRepositoryInterface $sessionRepository): UserEntityInterface
+    {
+        $this->sessionRepository = $sessionRepository;
         return $this;
     }
 

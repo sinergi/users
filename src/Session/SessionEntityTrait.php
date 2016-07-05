@@ -12,14 +12,16 @@ trait SessionEntityTrait
 {
     protected $id;
     protected $userId;
+    /** @var UserEntityInterface */
     protected $user;
-    /** @var  UserRepositoryInterface */
-    protected $userRepository;
     protected $isLongSession = false;
     protected $expirationDatetime;
+    /** @var UserRepositoryInterface */
+    protected $userRepository;
 
-    public function __construct()
+    public function __construct(UserRepositoryInterface $userRepository = null)
     {
+        $this->userRepository = $userRepository;
         $this->createId();
         $this->createExpirationDatetime();
     }
@@ -98,7 +100,7 @@ trait SessionEntityTrait
 
     public function getUser(): UserEntityInterface
     {
-        if ($this->user) {
+        if ($this->user && $this->user->getId() === $this->getUserId()) {
             return $this->user;
         } elseif (!$this->userRepository) {
             throw new \Exception('Cannot fetch user without user repository');

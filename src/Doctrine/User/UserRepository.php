@@ -2,21 +2,30 @@
 
 namespace Sinergi\Users\Doctrine\User;
 
-use Doctrine\DBAL\LockMode;
+use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\Mapping\ClassMetadata;
+use Interop\Container\ContainerInterface;
+use Sinergi\Users\Container;
+use Sinergi\Users\Group\GroupRepositoryInterface;
+use Sinergi\Users\Session\SessionRepositoryInterface;
 use Sinergi\Users\User\UserEntityInterface;
 use Sinergi\Users\User\UserRepositoryInterface;
 
-/**
- * @method UserEntity find($id, $lockMode = LockMode::NONE, $lockVersion = null)
- * @method UserEntity findOneBy(array $criteria, array $orderBy = null)
- * @method UserEntity findOneById(array $criteria, array $orderBy = null)
- * @method UserEntity findOneByEmail(array $criteria, array $orderBy = null)
- * @method UserEntity findOneByEmailConfirmationToken(array $criteria, array $orderBy = null)
- * @method UserEntity findOneByPasswordResetToken(array $criteria, array $orderBy = null)
- */
 class UserRepository extends EntityRepository implements UserRepositoryInterface
 {
+    private $container;
+
+    public function __construct(EntityManager $em, ClassMetadata $class, ContainerInterface $container)
+    {
+        parent::__construct($em, $class);
+        if ($container instanceof Container) {
+            $this->container = $container;
+        } else {
+            $this->container = new Container($container);
+        }
+    }
+
     /** @return UserEntity */
     public function findByEmail(string $email)
     {
@@ -26,7 +35,16 @@ class UserRepository extends EntityRepository implements UserRepositoryInterface
             ->getQuery()
             ->getResult();
 
-        return $result && $result[0] ? $result[0] : null;
+
+        if ($result && $result[0]) {
+            /** @var UserEntityInterface $user */
+            $user = $result[0];
+            $user->setGroupRepository($this->container->get(GroupRepositoryInterface::class));
+            $user->setSessionRepository($this->container->get(SessionRepositoryInterface::class));
+            return $user;
+        }
+
+        return null;
     }
 
     /** @return UserEntity */
@@ -38,7 +56,36 @@ class UserRepository extends EntityRepository implements UserRepositoryInterface
             ->getQuery()
             ->getResult();
 
-        return $result && $result[0] ? $result[0] : null;
+        if ($result && $result[0]) {
+            /** @var UserEntityInterface $user */
+            $user = $result[0];
+            $user->setGroupRepository($this->container->get(GroupRepositoryInterface::class));
+            $user->setSessionRepository($this->container->get(SessionRepositoryInterface::class));
+            return $user;
+        }
+
+        return null;
+    }
+
+    /** @return UserEntityInterface[] */
+    public function findByGroupId(int $id)
+    {
+        $result = $this->createQueryBuilder('u')
+            ->where('u.groupId = :groupId')
+            ->setParameter('groupId', $id)
+            ->getQuery()
+            ->getResult();
+
+        if ($result && $result[0]) {
+            /** @var UserEntityInterface $user */
+            foreach ($result as $user) {
+                $user->setGroupRepository($this->container->get(GroupRepositoryInterface::class));
+                $user->setSessionRepository($this->container->get(SessionRepositoryInterface::class));
+            }
+            return $result;
+        }
+
+        return [];
     }
 
     public function save(UserEntityInterface $user)

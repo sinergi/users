@@ -8,5 +8,7 @@ interface UserRepositoryInterface
     public function findByEmail(string $email);
     /** @return UserEntityInterface */
     public function findById(int $id);
+    /** @return UserEntityInterface[] */
+    public function findByGroupId(int $id);
     public function save(UserEntityInterface $user);
 }

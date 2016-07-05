@@ -4,6 +4,10 @@ namespace Sinergi\Users\User;
 
 use JsonSerializable;
 use DateTime;
+use Sinergi\Users\Group\GroupEntityInterface;
+use Sinergi\Users\Group\GroupRepositoryInterface;
+use Sinergi\Users\Session\SessionEntityInterface;
+use Sinergi\Users\Session\SessionRepositoryInterface;
 
 interface UserEntityInterface extends JsonSerializable
 {
@@ -15,6 +19,14 @@ interface UserEntityInterface extends JsonSerializable
 
     public function getId(): int;
     public function setId(int $id): UserEntityInterface;
+    /** @return int|null */
+    public function getGroupId();
+    public function setGroupId(int $groupId = null): UserEntityInterface;
+    /** @return GroupEntityInterface|null */
+    public function getGroup();
+    public function setGroup(GroupEntityInterface $group = null): UserEntityInterface;
+    /** @return SessionEntityInterface[] */
+    public function getSessions();
     /** @return string|null */
     public function getStatus();
     public function setStatus(string $status): UserEntityInterface;
@@ -68,6 +80,8 @@ interface UserEntityInterface extends JsonSerializable
     public function setCreationDatetime(DateTime $creationDatetime): UserEntityInterface;
     public function getModificationDatetime(): DateTime;
     public function setModificationDatetime(DateTime $modificationDatetime): UserEntityInterface;
+    public function setGroupRepository(GroupRepositoryInterface $groupRepository): UserEntityInterface;
+    public function setSessionRepository(SessionRepositoryInterface $sessionRepository): UserEntityInterface;
     public function toArray(): array;
     public function jsonSerialize();
 }

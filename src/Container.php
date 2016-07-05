@@ -38,6 +38,7 @@ class Container implements ContainerInterface
 
     private function init()
     {
+        $self = $this;
         $hasUserEntity = $this->container->has(UserEntityInterface::class);
         $hasUserRepository = $this->container->has(UserRepositoryInterface::class);
         $hasSessionEntity = $this->container->has(SessionEntityInterface::class);
@@ -50,8 +51,8 @@ class Container implements ContainerInterface
             $userEntity = $this->container->get(UserEntityInterface::class);
             if ($userEntity instanceof DoctrineUserEntity) {
                 $em = $this->container->get(EntityManager::class);
-                $this->items[UserRepositoryInterface::class] = function () use ($em, $userEntity) {
-                    return new DoctrineUserRepository($em, $em->getClassMetadata(get_class($userEntity)));
+                $this->items[UserRepositoryInterface::class] = function () use ($em, $userEntity, $self) {
+                    return new DoctrineUserRepository($em, $em->getClassMetadata(get_class($userEntity)), $self);
                 };
             } elseif ($userEntity instanceof EloquentUserEntity) {
                 $this->items[UserRepositoryInterface::class] = function () {
@@ -64,8 +65,8 @@ class Container implements ContainerInterface
             $sessionEntity = $this->container->get(SessionEntityInterface::class);
             if ($sessionEntity instanceof DoctrineSessionEntity) {
                 $em = $this->container->get(EntityManager::class);
-                $this->items[SessionRepositoryInterface::class] = function () use ($em, $sessionEntity) {
-                    return new DoctrineSessionRepository($em, $em->getClassMetadata(get_class($sessionEntity)));
+                $this->items[SessionRepositoryInterface::class] = function () use ($em, $sessionEntity, $self) {
+                    return new DoctrineSessionRepository($em, $em->getClassMetadata(get_class($sessionEntity)), $self);
                 };
             } elseif ($sessionEntity instanceof EloquentSessionEntity) {
                 $this->items[SessionRepositoryInterface::class] = function () {
@@ -78,8 +79,8 @@ class Container implements ContainerInterface
             $groupEntity = $this->container->get(GroupEntityInterface::class);
             if ($groupEntity instanceof DoctrineGroupEntity) {
                 $em = $this->container->get(EntityManager::class);
-                $this->items[GroupRepositoryInterface::class] = function () use ($em, $groupEntity) {
-                    return new DoctrineGroupRepository($em, $em->getClassMetadata(get_class($groupEntity)));
+                $this->items[GroupRepositoryInterface::class] = function () use ($em, $groupEntity, $self) {
+                    return new DoctrineGroupRepository($em, $em->getClassMetadata(get_class($groupEntity)), $self);
                 };
             } elseif ($groupEntity instanceof EloquentGroupEntity) {
                 $this->items[GroupRepositoryInterface::class] = function () {
