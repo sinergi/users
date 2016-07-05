@@ -8,4 +8,5 @@ interface UserRepositoryInterface
     public function findByEmail(string $email);
     /** @return UserEntityInterface */
     public function findById(int $id);
+    public function save(UserEntityInterface $user);
 }

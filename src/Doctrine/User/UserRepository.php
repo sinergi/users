@@ -4,6 +4,7 @@ namespace Sinergi\Users\Doctrine\User;
 
 use Doctrine\DBAL\LockMode;
 use Doctrine\ORM\EntityRepository;
+use Sinergi\Users\User\UserEntityInterface;
 use Sinergi\Users\User\UserRepositoryInterface;
 
 /**
@@ -38,5 +39,11 @@ class UserRepository extends EntityRepository implements UserRepositoryInterface
             ->getResult();
 
         return $result && $result[0] ? $result[0] : null;
+    }
+
+    public function save(UserEntityInterface $user)
+    {
+        $this->getEntityManager()->persist($user);
+        $this->getEntityManager()->flush($user);
     }
 }

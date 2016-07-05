@@ -12,6 +12,12 @@ use Sinergi\Users\Doctrine\Session\SessionEntity as DoctrineSessionEntity;
 use Sinergi\Users\Doctrine\Session\SessionRepository as DoctrineSessionRepository;
 use Sinergi\Users\Eloquent\Session\SessionEntity as EloquentSessionEntity;
 use Sinergi\Users\Eloquent\Session\SessionRepository as EloquentSessionRepository;
+use Sinergi\Users\Doctrine\Group\GroupEntity as DoctrineGroupEntity;
+use Sinergi\Users\Doctrine\Group\GroupRepository as DoctrineGroupRepository;
+use Sinergi\Users\Eloquent\Group\GroupEntity as EloquentGroupEntity;
+use Sinergi\Users\Eloquent\Group\GroupRepository as EloquentGroupRepository;
+use Sinergi\Users\Group\GroupEntityInterface;
+use Sinergi\Users\Group\GroupRepositoryInterface;
 use Sinergi\Users\Session\SessionEntityInterface;
 use Sinergi\Users\Session\SessionRepositoryInterface;
 use Sinergi\Users\User\UserEntityInterface;
@@ -36,6 +42,8 @@ class Container implements ContainerInterface
         $hasUserRepository = $this->container->has(UserRepositoryInterface::class);
         $hasSessionEntity = $this->container->has(SessionEntityInterface::class);
         $hasSessionRepository = $this->container->has(SessionRepositoryInterface::class);
+        $hasGroupEntity = $this->container->has(GroupEntityInterface::class);
+        $hasGroupRepository = $this->container->has(GroupRepositoryInterface::class);
         $hasUserValidator = $this->container->has(UserValidatorInterface::class);
 
         if ($hasUserEntity && !$hasUserRepository) {
@@ -62,6 +70,20 @@ class Container implements ContainerInterface
             } elseif ($sessionEntity instanceof EloquentSessionEntity) {
                 $this->items[SessionRepositoryInterface::class] = function () {
                     return new EloquentSessionRepository();
+                };
+            }
+        }
+
+        if ($hasGroupEntity && !$hasGroupRepository) {
+            $groupEntity = $this->container->get(GroupEntityInterface::class);
+            if ($groupEntity instanceof DoctrineGroupEntity) {
+                $em = $this->container->get(EntityManager::class);
+                $this->items[GroupRepositoryInterface::class] = function () use ($em, $groupEntity) {
+                    return new DoctrineGroupRepository($em, $em->getClassMetadata(get_class($groupEntity)));
+                };
+            } elseif ($groupEntity instanceof EloquentGroupEntity) {
+                $this->items[GroupRepositoryInterface::class] = function () {
+                    return new EloquentGroupRepository();
                 };
             }
         }
