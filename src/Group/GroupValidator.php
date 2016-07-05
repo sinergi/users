@@ -5,7 +5,7 @@ namespace Sinergi\Users\Group;
 use Interop\Container\ContainerInterface;
 use Sinergi\Users\Container;
 
-class GroupController
+class GroupValidator implements GroupValidatorInterface
 {
     private $container;
 
@@ -18,8 +18,9 @@ class GroupController
         }
     }
 
-    public function createGroup(GroupEntityInterface $group, array $users = null): GroupEntityInterface
+    public function __invoke(GroupEntityInterface $user): array
     {
-        
+        $errors = [];
+        return $errors;
     }
 }

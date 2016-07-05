@@ -18,6 +18,8 @@ use Sinergi\Users\Eloquent\Group\GroupEntity as EloquentGroupEntity;
 use Sinergi\Users\Eloquent\Group\GroupRepository as EloquentGroupRepository;
 use Sinergi\Users\Group\GroupEntityInterface;
 use Sinergi\Users\Group\GroupRepositoryInterface;
+use Sinergi\Users\Group\GroupValidator;
+use Sinergi\Users\Group\GroupValidatorInterface;
 use Sinergi\Users\Session\SessionEntityInterface;
 use Sinergi\Users\Session\SessionRepositoryInterface;
 use Sinergi\Users\User\UserEntityInterface;
@@ -46,6 +48,7 @@ class Container implements ContainerInterface
         $hasGroupEntity = $this->container->has(GroupEntityInterface::class);
         $hasGroupRepository = $this->container->has(GroupRepositoryInterface::class);
         $hasUserValidator = $this->container->has(UserValidatorInterface::class);
+        $hasGroupValidator = $this->container->has(GroupValidatorInterface::class);
 
         if ($hasUserEntity && !$hasUserRepository) {
             $userEntity = $this->container->get(UserEntityInterface::class);
@@ -90,9 +93,14 @@ class Container implements ContainerInterface
         }
 
         if (!$hasUserValidator) {
-            $self = $this;
             $this->items[UserValidatorInterface::class] = function () use ($self) {
                 return new UserValidator($self);
+            };
+        }
+
+        if (!$hasGroupValidator) {
+            $this->items[GroupValidatorInterface::class] = function () use ($self) {
+                return new GroupValidator($self);
             };
         }
     }

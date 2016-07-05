@@ -5,8 +5,10 @@ namespace Sinergi\Users\User;
 use Interop\Container\ContainerInterface;
 use Sinergi\Users\Container;
 
-class UserValidator
+class UserValidator implements UserValidatorInterface
 {
+    private $container;
+
     public function __construct(ContainerInterface $container)
     {
         if ($container instanceof Container) {
