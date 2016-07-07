@@ -7,7 +7,6 @@ use Sinergi\Users\User\UserEntityInterface;
 use Sinergi\Users\User\UserEntityTrait;
 
 /**
- * @ORM\Entity(repositoryClass="Sinergi\Users\Doctrine\User\UserRepository")
  * @ORM\Table(name="users", uniqueConstraints={@ORM\UniqueConstraint(name="email_unique_idx", columns={"email"})})
  */
 class UserEntity implements UserEntityInterface

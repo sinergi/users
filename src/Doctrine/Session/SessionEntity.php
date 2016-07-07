@@ -7,7 +7,6 @@ use Sinergi\Users\Session\SessionEntityTrait;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass="Sinergi\Users\Doctrine\Session\SessionRepository")
  * @ORM\Table(name="sessions")
  */
 class SessionEntity implements SessionEntityInterface

@@ -7,7 +7,6 @@ use Sinergi\Users\Group\GroupEntityTrait;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass="Sinergi\Users\Doctrine\Group\GroupRepository")
  * @ORM\Table(name="groups")
  */
 class GroupEntity implements GroupEntityInterface

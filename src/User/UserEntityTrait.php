@@ -3,11 +3,13 @@
 namespace Sinergi\Users\User;
 
 use DateTime;
+use Respect\Validation\Rules\Date;
 use Sinergi\Users\Group\GroupEntityInterface;
 use Sinergi\Users\Group\GroupRepositoryInterface;
 use Sinergi\Users\Session\SessionEntityInterface;
 use Sinergi\Users\Session\SessionRepositoryInterface;
 use Sinergi\Users\Utils\Token;
+use DateInterval;
 
 trait UserEntityTrait
 {
@@ -210,10 +212,15 @@ trait UserEntityTrait
         );
     }
 
-    public function generateEmailConfirmationToken(): UserEntityInterface
+    public function generateEmailConfirmationToken($token = null, DateInterval $expiration = null): UserEntityInterface
     {
         if ($this->canGenerateNewEmailConfirmationToken()) {
-            $this->setEmailConfirmationToken(Token::generate(40));
+            if (null === $expiration) {
+                $expiration = new DateInterval('P1D');
+            }
+
+            $this->setEmailConfirmationToken(null === $token ? Token::generate(40) : $token);
+            $this->setEmailConfirmationTokenExpirationDatetime((new DateTime())->add($expiration));
             $this->setLastEmailTokenGeneratedDatetime(new DateTime());
         }
         return $this;
