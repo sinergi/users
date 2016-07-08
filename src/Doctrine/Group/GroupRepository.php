@@ -43,7 +43,7 @@ class GroupRepository extends EntityRepository implements GroupRepositoryInterfa
         if ($result && $result[0]) {
             /** @var GroupEntityInterface $group */
             $group = $result[0];
-            $group->setUserRepository(UserRepositoryInterface::class);
+            $group->setUserRepository($this->container->get(UserRepositoryInterface::class));
             return $group;
         }
 

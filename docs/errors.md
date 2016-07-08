@@ -14,6 +14,11 @@
 ### User
 
 1200 => Invalid user
+1201 => Email confirmation token expired
+1202 => Too many email confirmation token attempts
+1203 => Invalid email confirmation token
+1204 => Email confirmation token blocked
+1205 => Email already confirmed
 
 #### User invalid errors
 

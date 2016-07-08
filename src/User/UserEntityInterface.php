@@ -3,6 +3,7 @@
 namespace Sinergi\Users\User;
 
 use JsonSerializable;
+use DateInterval;
 use DateTime;
 use Sinergi\Users\Group\GroupEntityInterface;
 use Sinergi\Users\Group\GroupRepositoryInterface;
@@ -43,19 +44,24 @@ interface UserEntityInterface extends JsonSerializable
     public function setIsEmailConfirmed(bool $isEmailConfirmed): UserEntityInterface;
     /** @return string */
     public function getEmailConfirmationToken();
-    public function setEmailConfirmationToken(string $emailConfirmationToken): UserEntityInterface;
+    public function setEmailConfirmationToken(string $emailConfirmationToken = null): UserEntityInterface;
+    /** @return int */
+    public function getEmailConfirmationTokenAttempts();
+    public function setEmailConfirmationTokenAttempts(int $emailConfirmationTokenAttempts = 0): UserEntityInterface;
     /** @return DateTime */
     public function getEmailConfirmationTokenExpirationDatetime();
     public function setEmailConfirmationTokenExpirationDatetime(
-        DateTime $emailConfirmationTokenExpirationDatetime
+        DateTime $emailConfirmationTokenExpirationDatetime = null
     ): UserEntityInterface;
     /** @return DateTime */
     public function getLastEmailTokenGeneratedDatetime();
     public function setLastEmailTokenGeneratedDatetime(
         DateTime $lastEmailTokenGeneratedDatetime
     ): UserEntityInterface;
-    public function canGenerateNewEmailConfirmationToken(): bool;
-    public function generateEmailConfirmationToken(): UserEntityInterface;
+    public function hasEmailConfirmationTokenCooldownExpired(): bool;
+    public function hasEmailConfirmationTokenExpired(): bool;
+    public function hasTooManyEmailConfirmationTokenAttempts(): bool;
+    public function generateEmailConfirmationToken($token = null, DateInterval $expiration = null): UserEntityInterface;
     /** @return string */
     public function getDeletedEmail();
     public function setDeletedEmail(string $deletedEmail): UserEntityInterface;

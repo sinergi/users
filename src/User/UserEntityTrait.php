@@ -3,7 +3,6 @@
 namespace Sinergi\Users\User;
 
 use DateTime;
-use Respect\Validation\Rules\Date;
 use Sinergi\Users\Group\GroupEntityInterface;
 use Sinergi\Users\Group\GroupRepositoryInterface;
 use Sinergi\Users\Session\SessionEntityInterface;
@@ -26,6 +25,7 @@ trait UserEntityTrait
     protected $deletedEmail = null;
     protected $isEmailConfirmed = false;
     protected $emailConfirmationToken;
+    protected $emailConfirmationTokenAttempts;
     protected $emailConfirmationTokenExpirationDatetime;
     protected $lastEmailTokenGeneratedDatetime;
     protected $password;
@@ -171,9 +171,21 @@ trait UserEntityTrait
         return $this->emailConfirmationToken;
     }
 
-    public function setEmailConfirmationToken(string $emailConfirmationToken): UserEntityInterface
+    public function setEmailConfirmationToken(string $emailConfirmationToken = null): UserEntityInterface
     {
         $this->emailConfirmationToken = $emailConfirmationToken;
+        return $this;
+    }
+
+    /** @return int */
+    public function getEmailConfirmationTokenAttempts()
+    {
+        return $this->emailConfirmationTokenAttempts;
+    }
+
+    public function setEmailConfirmationTokenAttempts(int $emailConfirmationTokenAttempts = 0): UserEntityInterface
+    {
+        $this->emailConfirmationTokenAttempts = $emailConfirmationTokenAttempts;
         return $this;
     }
 
@@ -184,7 +196,7 @@ trait UserEntityTrait
     }
 
     public function setEmailConfirmationTokenExpirationDatetime(
-        DateTime $emailConfirmationTokenExpirationDatetime
+        DateTime $emailConfirmationTokenExpirationDatetime = null
     ): UserEntityInterface {
         $this->emailConfirmationTokenExpirationDatetime = $emailConfirmationTokenExpirationDatetime;
         return $this;
@@ -203,26 +215,31 @@ trait UserEntityTrait
         return $this;
     }
 
-    public function canGenerateNewEmailConfirmationToken(): bool
+    public function hasEmailConfirmationTokenCooldownExpired(): bool
     {
-        $lastGenerated = $this->getLastEmailTokenGeneratedDatetime();
-        return (
-            empty($lastGenerated) ||
-            (new DateTime())->getTimestamp() - $lastGenerated->getTimestamp() > UserEntityInterface::EMAIL_COOLDOWN
-        );
+        return (new DateTime())->getTimestamp() - $this->getLastEmailTokenGeneratedDatetime()->getTimestamp() >
+            UserEntityInterface::EMAIL_COOLDOWN;
+    }
+
+    public function hasEmailConfirmationTokenExpired(): bool
+    {
+        return ($this->getEmailConfirmationTokenExpirationDatetime() <= new DateTime());
+    }
+
+    public function hasTooManyEmailConfirmationTokenAttempts(): bool
+    {
+        return $this->getEmailConfirmationTokenAttempts() > 5;
     }
 
     public function generateEmailConfirmationToken($token = null, DateInterval $expiration = null): UserEntityInterface
     {
-        if ($this->canGenerateNewEmailConfirmationToken()) {
-            if (null === $expiration) {
-                $expiration = new DateInterval('P1D');
-            }
-
-            $this->setEmailConfirmationToken(null === $token ? Token::generate(40) : $token);
-            $this->setEmailConfirmationTokenExpirationDatetime((new DateTime())->add($expiration));
-            $this->setLastEmailTokenGeneratedDatetime(new DateTime());
+        if (null === $expiration) {
+            $expiration = new DateInterval('P1D');
         }
+        $this->setEmailConfirmationTokenAttempts(0);
+        $this->setEmailConfirmationToken(null === $token ? Token::generate(40) : $token);
+        $this->setEmailConfirmationTokenExpirationDatetime((new DateTime())->add($expiration));
+        $this->setLastEmailTokenGeneratedDatetime(new DateTime());
         return $this;
     }
 

@@ -61,6 +61,12 @@ class UserEntity implements UserEntityInterface
     protected $emailConfirmationToken;
 
     /**
+     * @ORM\Column(type="integer", name="email_confirmation_token_attempts")
+     * @var int
+     */
+    protected $emailConfirmationTokenAttempts;
+
+    /**
      * @ORM\Column(type="datetime", name="email_confirmation_token_expiration_datetime", nullable=true)
      */
     protected $emailConfirmationTokenExpirationDatetime;

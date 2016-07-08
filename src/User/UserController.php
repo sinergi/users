@@ -4,7 +4,13 @@ namespace Sinergi\Users\User;
 
 use Interop\Container\ContainerInterface;
 use Sinergi\Users\Container;
+use Sinergi\Users\User\Exception\EmailAlreadyConfirmedException;
+use Sinergi\Users\User\Exception\EmailConfirmationTokenBlockedException;
+use Sinergi\Users\User\Exception\EmailConfirmationTokenExpiredException;
+use Sinergi\Users\User\Exception\InvalidEmailConfirmationTokenException;
 use Sinergi\Users\User\Exception\InvalidUserException;
+use Sinergi\Users\User\Exception\TooManyEmailConfirmationTokenAttemptsException;
+use DateInterval;
 
 class UserController
 {
@@ -17,6 +23,54 @@ class UserController
         } else {
             $this->container = new Container($container);
         }
+    }
+
+    public function generateEmailConfirmationToken(
+        UserEntityInterface $user,
+        string $token = null,
+        DateInterval $expiration = null,
+        bool $save = true
+    ): UserEntityInterface {
+        if ($user->isEmailConfirmed()) {
+            throw new EmailAlreadyConfirmedException;
+        } elseif ($user->getEmailConfirmationToken() && !$user->hasEmailConfirmationTokenCooldownExpired()) {
+            throw new EmailConfirmationTokenBlockedException;
+        }
+
+        $user->generateEmailConfirmationToken($token, $expiration);
+        if ($save) {
+            /** @var UserRepositoryInterface $userRepository */
+            $userRepository = $this->container->get(UserRepositoryInterface::class);
+            $userRepository->save($user);
+        }
+        return $user;
+    }
+
+    public function confirmEmail(UserEntityInterface $user, string $emailConfirmationToken): UserEntityInterface
+    {
+        if ($user->isEmailConfirmed()) {
+            throw new EmailAlreadyConfirmedException;
+        } elseif ($user->hasEmailConfirmationTokenExpired()) {
+            throw new EmailConfirmationTokenExpiredException;
+        } elseif ($user->hasTooManyEmailConfirmationTokenAttempts()) {
+            throw new TooManyEmailConfirmationTokenAttemptsException;
+        }
+
+        /** @var UserRepositoryInterface $userRepository */
+        $userRepository = $this->container->get(UserRepositoryInterface::class);
+
+        if ($user->getEmailConfirmationToken() !== $emailConfirmationToken) {
+            $user->setEmailConfirmationTokenAttempts($user->getEmailConfirmationTokenAttempts() + 1);
+            $userRepository->save($user);
+            throw new InvalidEmailConfirmationTokenException;
+        }
+
+        $user->setIsEmailConfirmed(true);
+        $user->setEmailConfirmationToken(null);
+        $user->setEmailConfirmationTokenAttempts(0);
+        $user->setEmailConfirmationTokenExpirationDatetime(null);
+        $userRepository->save($user);
+        return $user;
     }
 
     public function createUser(UserEntityInterface $user): UserEntityInterface
