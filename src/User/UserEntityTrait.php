@@ -306,21 +306,21 @@ trait UserEntityTrait
         return $this;
     }
 
-    public function canGenerateNewResetPasswordToken(): bool
+    public function hasPasswordResetTokenCooldownExpired(): bool
     {
-        $lastGenerated = $this->getLastPasswordResetTokenGeneratedDatetime();
-        return (
-            empty($lastGenerated) ||
-            (new DateTime())->getTimestamp() - $lastGenerated->getTimestamp() > UserEntityInterface::EMAIL_COOLDOWN
-        );
+        return (new DateTime())->getTimestamp() - $this->getLastPasswordResetTokenGeneratedDatetime()->getTimestamp() >
+            UserEntityInterface::EMAIL_COOLDOWN;
     }
 
-    public function generatePasswordResetToken(): UserEntityInterface
+    public function generatePasswordResetToken($token = null, DateInterval $expiration = null): UserEntityInterface
     {
-        if ($this->canGenerateNewResetPasswordToken()) {
-            $this->setPasswordResetToken(Token::generate(40));
-            $this->setLastPasswordResetTokenGeneratedDatetime(new DateTime());
+        if (null === $expiration) {
+            $expiration = new DateInterval('P1D');
         }
+
+        $this->setPasswordResetToken(null === $token ? Token::generate(40) : $token);
+        $this->setPasswordResetTokenExpirationDatetime((new DateTime())->add($expiration));
+        $this->setLastPasswordResetTokenGeneratedDatetime(new DateTime());
         return $this;
     }
 

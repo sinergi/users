@@ -19,6 +19,8 @@
 1203 => Invalid email confirmation token
 1204 => Email confirmation token blocked
 1205 => Email already confirmed
+1206 => User not found
+1207 => Password reset token blocked
 
 #### User invalid errors
 

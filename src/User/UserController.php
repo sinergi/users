@@ -4,13 +4,16 @@ namespace Sinergi\Users\User;
 
 use Interop\Container\ContainerInterface;
 use Sinergi\Users\Container;
+use Sinergi\Users\Throttle\Throttle;
 use Sinergi\Users\User\Exception\EmailAlreadyConfirmedException;
 use Sinergi\Users\User\Exception\EmailConfirmationTokenBlockedException;
 use Sinergi\Users\User\Exception\EmailConfirmationTokenExpiredException;
 use Sinergi\Users\User\Exception\InvalidEmailConfirmationTokenException;
 use Sinergi\Users\User\Exception\InvalidUserException;
+use Sinergi\Users\User\Exception\PasswordResetTokenBlockedException;
 use Sinergi\Users\User\Exception\TooManyEmailConfirmationTokenAttemptsException;
 use DateInterval;
+use Sinergi\Users\User\Exception\UserNotFoundException;
 
 class UserController
 {
@@ -38,6 +41,34 @@ class UserController
         }
 
         $user->generateEmailConfirmationToken($token, $expiration);
+        if ($save) {
+            /** @var UserRepositoryInterface $userRepository */
+            $userRepository = $this->container->get(UserRepositoryInterface::class);
+            $userRepository->save($user);
+        }
+        return $user;
+    }
+
+    public function generatePassswordResetToken(
+        string $email,
+        string $token = null,
+        DateInterval $expiration = null,
+        string $ip = null,
+        bool $save = true
+    ): UserEntityInterface {
+        if ($ip) {
+            Throttle::throttle($ip);
+        }
+        /** @var UserRepositoryInterface $userRepository */
+        $userRepository = $this->container->get(UserRepositoryInterface::class);
+        $user = $userRepository->findByEmail($email);
+        if (!$user) {
+            throw new UserNotFoundException;
+        } elseif ($user->getPasswordResetToken() && !$user->hasPasswordResetTokenCooldownExpired()) {
+            throw new PasswordResetTokenBlockedException;
+        }
+
+        $user->generatePasswordResetToken($token, $expiration);
         if ($save) {
             /** @var UserRepositoryInterface $userRepository */
             $userRepository = $this->container->get(UserRepositoryInterface::class);

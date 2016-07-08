@@ -81,8 +81,8 @@ interface UserEntityInterface extends JsonSerializable
     public function setLastPasswordResetTokenGeneratedDatetime(
         DateTime $lastPasswordResetTokenGeneratedDatetime
     ): UserEntityInterface;
-    public function canGenerateNewResetPasswordToken(): bool;
-    public function generatePasswordResetToken(): UserEntityInterface;
+    public function hasPasswordResetTokenCooldownExpired(): bool;
+    public function generatePasswordResetToken($token = null, DateInterval $expiration = null): UserEntityInterface;
     public function testPassword(string $password): bool;
     public function getCreationDatetime(): DateTime;
     public function setCreationDatetime(DateTime $creationDatetime): UserEntityInterface;
