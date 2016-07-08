@@ -33,16 +33,14 @@ class Throttle
                 $lastAttempt = ((new Datetime())->getTimestamp() - (new DateTime($pool[$ip][1]))->getTimestamp());
                 if ($lastAttempt > 300) {
                     $pool[$ip][0] = 1;
-                    $pool[$ip][1] = (new DateTime())->format('Y-m-d H:i:s');
                 } else {
                     $pool[$ip][0] += 1;
-                    $pool[$ip][1] = (new DateTime())->format('Y-m-d H:i:s');
                 }
             } else {
                 $pool[$ip] = [];
                 $pool[$ip][0] = 1;
-                $pool[$ip][1] = (new DateTime())->format('Y-m-d H:i:s');
             }
+            $pool[$ip][1] = (new DateTime())->format('Y-m-d H:i:s');
 
             self::save($pool);
 

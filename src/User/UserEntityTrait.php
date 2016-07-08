@@ -274,7 +274,7 @@ trait UserEntityTrait
         return $this->passwordResetToken;
     }
 
-    public function setPasswordResetToken(string $passwordResetToken): UserEntityInterface
+    public function setPasswordResetToken(string $passwordResetToken = null): UserEntityInterface
     {
         $this->passwordResetToken = $passwordResetToken;
         return $this;
@@ -287,7 +287,7 @@ trait UserEntityTrait
     }
 
     public function setPasswordResetTokenExpirationDatetime(
-        DateTime $passwordResetTokenExpirationDatetime
+        DateTime $passwordResetTokenExpirationDatetime = null
     ): UserEntityInterface {
         $this->passwordResetTokenExpirationDatetime = $passwordResetTokenExpirationDatetime;
         return $this;
@@ -304,6 +304,11 @@ trait UserEntityTrait
     ): UserEntityInterface {
         $this->lastPasswordResetTokenGeneratedDatetime = $lastPasswordResetTokenGeneratedDatetime;
         return $this;
+    }
+
+    public function hasPasswordResetTokenExpired(): bool
+    {
+        return ($this->getPasswordResetTokenExpirationDatetime() <= new DateTime());
     }
 
     public function hasPasswordResetTokenCooldownExpired(): bool

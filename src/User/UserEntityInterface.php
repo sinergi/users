@@ -70,17 +70,18 @@ interface UserEntityInterface extends JsonSerializable
     public function setPassword(string $password): UserEntityInterface;
     /** @return string */
     public function getPasswordResetToken();
-    public function setPasswordResetToken(string $passwordResetToken): UserEntityInterface;
+    public function setPasswordResetToken(string $passwordResetToken = null): UserEntityInterface;
     /** @return DateTime */
     public function getPasswordResetTokenExpirationDatetime();
     public function setPasswordResetTokenExpirationDatetime(
-        DateTime $passwordResetTokenExpirationDatetime
+        DateTime $passwordResetTokenExpirationDatetime = null
     ): UserEntityInterface;
     /** @return DateTime */
     public function getLastPasswordResetTokenGeneratedDatetime();
     public function setLastPasswordResetTokenGeneratedDatetime(
         DateTime $lastPasswordResetTokenGeneratedDatetime
     ): UserEntityInterface;
+    public function hasPasswordResetTokenExpired(): bool;
     public function hasPasswordResetTokenCooldownExpired(): bool;
     public function generatePasswordResetToken($token = null, DateInterval $expiration = null): UserEntityInterface;
     public function testPassword(string $password): bool;

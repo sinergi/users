@@ -21,6 +21,8 @@
 1205 => Email already confirmed
 1206 => User not found
 1207 => Password reset token blocked
+1208 => Password reset token expired
+1209 => Invalid password reset token
 
 #### User invalid errors
 

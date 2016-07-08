@@ -9,8 +9,10 @@ use Sinergi\Users\User\Exception\EmailAlreadyConfirmedException;
 use Sinergi\Users\User\Exception\EmailConfirmationTokenBlockedException;
 use Sinergi\Users\User\Exception\EmailConfirmationTokenExpiredException;
 use Sinergi\Users\User\Exception\InvalidEmailConfirmationTokenException;
+use Sinergi\Users\User\Exception\InvalidPasswordResetTokenException;
 use Sinergi\Users\User\Exception\InvalidUserException;
 use Sinergi\Users\User\Exception\PasswordResetTokenBlockedException;
+use Sinergi\Users\User\Exception\PasswordResetTokenExpiredException;
 use Sinergi\Users\User\Exception\TooManyEmailConfirmationTokenAttemptsException;
 use DateInterval;
 use Sinergi\Users\User\Exception\UserNotFoundException;
@@ -74,6 +76,46 @@ class UserController
             $userRepository = $this->container->get(UserRepositoryInterface::class);
             $userRepository->save($user);
         }
+        return $user;
+    }
+
+    public function resetPassword(
+        string $token,
+        string $password,
+        string $ip = null,
+        bool $save = true
+    ): UserEntityInterface {
+        if ($ip) {
+            Throttle::throttle($ip);
+        }
+
+        /** @var UserRepositoryInterface $userRepository */
+        $userRepository = $this->container->get(UserRepositoryInterface::class);
+        $user = $userRepository->findByResetPasswordToken($token);
+
+        if (!$user) {
+            throw new InvalidPasswordResetTokenException;
+        } elseif ($user->hasPasswordResetTokenExpired()) {
+            throw new PasswordResetTokenExpiredException;
+        }
+
+        $user->setPassword($password);
+
+        /** @var UserValidatorInterface $userValidator */
+        $userValidator = $this->container->get(UserValidatorInterface::class);
+        $errors = $userValidator($user);
+
+        if (count($errors)) {
+            throw new InvalidUserException($errors);
+        }
+
+        $user->setPasswordResetToken(null);
+        $user->setPasswordResetTokenExpirationDatetime(null);
+
+        if ($save) {
+            $userRepository->save($user);
+        }
+
         return $user;
     }
 

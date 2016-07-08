@@ -88,6 +88,30 @@ class UserRepository extends EntityRepository implements UserRepositoryInterface
         return [];
     }
 
+    /** @return UserEntityInterface */
+    public function findByResetPasswordToken(string $token)
+    {
+        if (empty($token)) {
+            return null;
+        }
+
+        $result = $this->createQueryBuilder('u')
+            ->where('u.passwordResetToken = :token')
+            ->setParameter('token', $token)
+            ->getQuery()
+            ->getResult();
+
+        if ($result && $result[0]) {
+            /** @var UserEntityInterface $user */
+            $user = $result[0];
+            $user->setGroupRepository($this->container->get(GroupRepositoryInterface::class));
+            $user->setSessionRepository($this->container->get(SessionRepositoryInterface::class));
+            return $user;
+        }
+
+        return null;
+    }
+
     public function save(UserEntityInterface $user)
     {
         $this->getEntityManager()->persist($user);
